@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Speedquiz</title>
+
   <style>
     body {
       margin: 0;
@@ -66,8 +67,13 @@
       font-size: 20px;
     }
 
-    .correct { color: #4ade80; }
-    .wrong { color: #f87171; }
+    .correct {
+      color: #4ade80;
+    }
+
+    .wrong {
+      color: #f87171;
+    }
 
     .summary {
       margin-top: 20px;
@@ -100,27 +106,56 @@
       margin: 0;
       color: #4ade80;
     }
+
+    .intro-text {
+      color: #aaa;
+      font-size: 18px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
+
 <body>
 
 <div class="container">
 
   <div id="startScreen">
-    <h1>Speedquiz</h1>
-    <p>Gib deinen Namen ein und starte das Quiz.</p>
+
+    <h1>Wieviel km/h war ich zu schnell?</h1>
+
+    <p class="intro-text">
+      Schätze bei jedem Bild die richtige Geschwindigkeitsüberschreitung.
+    </p>
+
+    <p class="intro-text">
+      Gib zuerst deinen Namen ein.
+    </p>
+
     <input id="playerNameInput" placeholder="Dein Name" />
+
     <br>
+
     <button onclick="startQuiz()">Start</button>
+
   </div>
 
   <div id="quizScreen" style="display:none;">
+
     <h1>Speedquiz</h1>
+
     <p id="progress"></p>
+
     <img id="quizImage" src="" alt="Quizbild" />
+
     <div id="options" class="options"></div>
+
     <div id="feedback" class="result"></div>
-    <button id="nextButton" class="next" style="display:none;">Weiter</button>
+
+    <button id="nextButton" class="next" style="display:none;">
+      Weiter
+    </button>
+
   </div>
 
   <div id="summary" class="summary"></div>
@@ -128,24 +163,128 @@
 </div>
 
 <script>
+
 const questions = [
-  { normalImage: "1_normal.jpg", solutionImage: "1_solution.jpg", correct: 17, options: [7, 17, 27, 47] },
-  { normalImage: "2_normal.jpg", solutionImage: "2_solution.jpg", correct: 9, options: [3, 6, 9, 72] },
-  { normalImage: "3_normal.jpg", solutionImage: "3_solution.jpg", correct: 13, options: [6, 13, 19, 28] },
-  { normalImage: "4_normal.jpg", solutionImage: "4_solution.jpg", correct: 14, options: [7, 11, 14, 28] },
-  { normalImage: "5_normal.jpg", solutionImage: "5_solution.jpg", correct: 7, options: [7, 9, 11, 14] },
-  { normalImage: "6_normal.jpg", solutionImage: "6_solution.jpg", correct: 17, options: [6, 7, 13, 17] },
-  { normalImage: "7_normal.jpg", solutionImage: "7_solution.jpg", correct: 6, options: [4, 6, 12, 14] },
-  { normalImage: "8_normal.jpg", solutionImage: "8_solution.jpg", correct: 6, options: [6, 8, 10, 12] },
-  { normalImage: "9_normal.jpg", solutionImage: "9_solution.jpg", correct: 7, options: [3, 6, 7, 44] },
-  { normalImage: "10_normal.jpg", solutionImage: "10_solution.jpg", correct: 6, options: [0, 6, 7, 88] },
-  { normalImage: "11_normal.jpg", solutionImage: "11_solution.jpg", correct: 6, options: [5, 6, 7, 8] },
-  { normalImage: "12_normal.jpg", solutionImage: "12_solution.jpg", correct: 6, options: [4, 6, 10, 20] },
-  { normalImage: "13_normal.jpg", solutionImage: "13_solution.jpg", correct: 11, options: [7, 10, 11, 24] },
-  { normalImage: "14_normal.jpg", solutionImage: "14_solution.jpg", correct: 7, options: [5, 7, 18, 55] },
-  { normalImage: "15_normal.jpg", solutionImage: "15_solution.jpg", correct: 6, options: [4, 6, 8, 110] },
-  { normalImage: "16_normal.jpg", solutionImage: "16_solution.jpg", correct: 7, options: [7, 14, 28, 44] },
-  { normalImage: "17_normal.jpg", solutionImage: "17_solution.jpg", correct: 7, options: [3, 7, 13, 240] }
+
+  {
+    normalImage: "1_normal.jpg",
+    solutionImage: "1_solution.jpg",
+    correct: 17,
+    options: [7, 17, 27, 47]
+  },
+
+  {
+    normalImage: "2_normal.jpg",
+    solutionImage: "2_solution.jpg",
+    correct: 9,
+    options: [3, 6, 9, 72]
+  },
+
+  {
+    normalImage: "3_normal.jpg",
+    solutionImage: "3_solution.jpg",
+    correct: 13,
+    options: [6, 13, 19, 28]
+  },
+
+  {
+    normalImage: "4_normal.jpg",
+    solutionImage: "4_solution.jpg",
+    correct: 14,
+    options: [7, 11, 14, 28]
+  },
+
+  {
+    normalImage: "5_normal.jpg",
+    solutionImage: "5_solution.jpg",
+    correct: 7,
+    options: [7, 9, 11, 14]
+  },
+
+  {
+    normalImage: "6_normal.jpg",
+    solutionImage: "6_solution.jpg",
+    correct: 17,
+    options: [6, 7, 13, 17]
+  },
+
+  {
+    normalImage: "7_normal.jpg",
+    solutionImage: "7_solution.jpg",
+    correct: 6,
+    options: [4, 6, 12, 14]
+  },
+
+  {
+    normalImage: "8_normal.jpg",
+    solutionImage: "8_solution.jpg",
+    correct: 6,
+    options: [6, 8, 10, 12]
+  },
+
+  {
+    normalImage: "9_normal.jpg",
+    solutionImage: "9_solution.jpg",
+    correct: 7,
+    options: [3, 6, 7, 44]
+  },
+
+  {
+    normalImage: "10_normal.jpg",
+    solutionImage: "10_solution.jpg",
+    correct: 6,
+    options: [0, 6, 7, 88]
+  },
+
+  {
+    normalImage: "11_normal.jpg",
+    solutionImage: "11_solution.jpg",
+    correct: 6,
+    options: [5, 6, 7, 8]
+  },
+
+  {
+    normalImage: "12_normal.jpg",
+    solutionImage: "12_solution.jpg",
+    correct: 6,
+    options: [4, 6, 10, 20]
+  },
+
+  {
+    normalImage: "13_normal.jpg",
+    solutionImage: "13_solution.jpg",
+    correct: 11,
+    options: [7, 10, 11, 24]
+  },
+
+  {
+    normalImage: "14_normal.jpg",
+    solutionImage: "14_solution.jpg",
+    correct: 7,
+    options: [5, 7, 18, 55]
+  },
+
+  {
+    normalImage: "15_normal.jpg",
+    solutionImage: "15_solution.jpg",
+    correct: 6,
+    options: [4, 6, 8, 110]
+  },
+
+  {
+    normalImage: "16_normal.jpg",
+    solutionImage: "16_solution.jpg",
+    correct: 7,
+    options: [7, 14, 28, 44]
+  },
+
+  {
+    normalImage: "17_normal.jpg",
+    solutionImage: "17_solution.jpg",
+    correct: 7,
+    options: [3, 7, 13, 240]
+  }
+
 ];
 
 let currentQuestion = 0;
@@ -164,6 +303,7 @@ const progress = document.getElementById("progress");
 const summary = document.getElementById("summary");
 
 function startQuiz() {
+
   playerName = playerNameInput.value.trim();
 
   if (!playerName) {
@@ -172,28 +312,42 @@ function startQuiz() {
 
   startScreen.style.display = "none";
   quizScreen.style.display = "block";
+
   loadQuestion();
+
 }
 
 function loadQuestion() {
+
   const q = questions[currentQuestion];
 
-  progress.textContent = `Frage ${currentQuestion + 1} von ${questions.length}`;
+  progress.textContent =
+    `Frage ${currentQuestion + 1} von ${questions.length}`;
+
   quizImage.src = q.normalImage;
+
   feedback.innerHTML = "";
   optionsDiv.innerHTML = "";
   nextButton.style.display = "none";
 
   q.options.forEach(option => {
+
     const btn = document.createElement("button");
+
     btn.textContent = option + " km/h";
+
     btn.onclick = () => selectAnswer(option);
+
     optionsDiv.appendChild(btn);
+
   });
+
 }
 
 function selectAnswer(selected) {
+
   const q = questions[currentQuestion];
+
   const isCorrect = selected === q.correct;
 
   if (isCorrect) score++;
@@ -206,46 +360,79 @@ function selectAnswer(selected) {
   });
 
   quizImage.src = q.solutionImage;
+
   optionsDiv.innerHTML = "";
 
   feedback.innerHTML = isCorrect
-    ? `<span class="correct">✅ Richtig! ${q.correct} km/h</span>`
-    : `<span class="wrong">❌ Falsch.<br>Deine Antwort: ${selected} km/h<br>Richtig: ${q.correct} km/h</span>`;
+    ? `<span class="correct">
+        ✅ Richtig! ${q.correct} km/h
+      </span>`
+    : `<span class="wrong">
+        ❌ Falsch.<br>
+        Deine Antwort: ${selected} km/h<br>
+        Richtig: ${q.correct} km/h
+      </span>`;
 
   nextButton.style.display = "block";
+
 }
 
 nextButton.onclick = () => {
+
   currentQuestion++;
 
   if (currentQuestion < questions.length) {
+
     loadQuestion();
+
   } else {
+
     showSummary();
+
   }
+
 };
 
 function showSummary() {
+
   quizScreen.style.display = "none";
 
   summary.innerHTML = `
     <div class="final-card">
+
       <h2>${playerName}</h2>
-      <h1>hat ${score} von ${questions.length} richtig</h1>
+
+      <h1>
+        hat ${score} von ${questions.length} richtig
+      </h1>
+
     </div>
   `;
 
   answers.forEach(a => {
+
     summary.innerHTML += `
       <div class="summary-item">
-        <strong>Frage ${a.question}</strong><br>
-        Deine Antwort: ${a.selected} km/h<br>
-        Richtig: ${a.correct} km/h<br>
+
+        <strong>
+          Frage ${a.question}
+        </strong><br><br>
+
+        Deine Antwort:
+        ${a.selected} km/h<br>
+
+        Richtige Antwort:
+        ${a.correct} km/h<br><br>
+
         ${a.isCorrect ? "✅ Richtig" : "❌ Falsch"}
+
       </div>
     `;
+
   });
+
 }
+
 </script>
 
 </body>
