@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Speedquiz</title>
+
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
       background: #111;
       color: white;
+      font-family: Arial, sans-serif;
       text-align: center;
     }
 
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
       padding: 20px;
     }
@@ -23,11 +24,16 @@
       margin-bottom: 10px;
     }
 
+    #progress {
+      margin-bottom: 20px;
+      color: #aaa;
+    }
+
     img {
       width: 100%;
-      max-height: 420px;
+      max-height: 500px;
       object-fit: contain;
-      border-radius: 12px;
+      border-radius: 14px;
       background: #222;
     }
 
@@ -39,23 +45,28 @@
     }
 
     button {
-      padding: 16px;
+      padding: 18px;
       font-size: 20px;
       border: none;
       border-radius: 12px;
-      cursor: pointer;
       background: #2f7df6;
       color: white;
       font-weight: bold;
+      cursor: pointer;
     }
 
     button:hover {
       background: #1f5fc0;
     }
 
-    .result {
+    .nextBtn {
       margin-top: 20px;
-      font-size: 20px;
+      background: #22c55e;
+    }
+
+    .feedback {
+      margin-top: 20px;
+      font-size: 22px;
     }
 
     .correct {
@@ -67,117 +78,208 @@
     }
 
     .summary {
+      margin-top: 30px;
       text-align: left;
-      margin-top: 20px;
     }
 
     .summary-item {
       background: #222;
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-
-    .next {
-      margin-top: 20px;
-      background: #22c55e;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>Speedquiz</h1>
-    <p id="progress"></p>
 
-    <img id="quizImage" src="" alt="Quizbild" />
+<div class="container">
 
-    <div id="options" class="options"></div>
+  <h1>Speedquiz</h1>
 
-    <div id="feedback" class="result"></div>
+  <div id="progress"></div>
 
-    <button id="nextButton" class="next" style="display:none;">Weiter</button>
+  <img id="quizImage">
 
-    <div id="summary" class="summary"></div>
-  </div>
+  <div id="options" class="options"></div>
 
-  <script>
-    const questions = [
-      {
-        normalImage: "images/1_normal.jpg",
-        solutionImage: "images/1_solution.jpg",
-        correct: 120,
-        options: [80, 100, 120, 160]
-      },
-      {
-        normalImage: "images/2_normal.jpg",
-        solutionImage: "images/2_solution.jpg",
-        correct: 90,
-        options: [60, 90, 130, 180]
-      }
-    ];
+  <div id="feedback" class="feedback"></div>
 
-    let currentQuestion = 0;
-    let score = 0;
-    let answers = [];
+  <button id="nextBtn" class="nextBtn" style="display:none;">
+    Weiter
+  </button>
 
-    const quizImage = document.getElementById("quizImage");
-    const optionsDiv = document.getElementById("options");
-    const feedback = document.getElementById("feedback");
-    const nextButton = document.getElementById("nextButton");
-    const progress = document.getElementById("progress");
-    const summary = document.getElementById("summary");
+  <div id="summary" class="summary"></div>
 
-    function loadQuestion() {
-      const q = questions[currentQuestion];
+</div>
 
-      progress.textContent = `Frage ${currentQuestion + 1} von ${questions.length}`;
-      quizImage.src = q.normalImage;
-      feedback.innerHTML = "";
-      optionsDiv.innerHTML = "";
-      summary.innerHTML = "";
-      nextButton.style.display = "none";
+<script>
 
-      q.options.forEach(option => {
-        const btn = document.createElement("button");
-        btn.textContent = option + " km/h";
-        btn.onclick = () => selectAnswer(option);
-        optionsDiv.appendChild(btn);
-      });
-    }
+const questions = [
 
-    function selectAnswer(selected) {
-      const q = questions[currentQuestion];
-      const isCorrect = selected === q.correct;
+  {
+    normalImage: "10_normal.jpg",
+    solutionImage: "10_solution.jpg",
+    correct: 120,
+    options: [80, 100, 120, 160]
+  },
 
-      if (isCorrect) score++;
+  {
+    normalImage: "11_normal.jpg",
+    solutionImage: "11_solution.jpg",
+    correct: 90,
+    options: [60, 90, 130, 180]
+  },
 
-      answers.push({
-        question: currentQuestion + 1,
-        selected,
-        correct: q.correct,
-        isCorrect
-      });
+  {
+    normalImage: "12_normal.jpg",
+    solutionImage: "12_solution.jpg",
+    correct: 150,
+    options: [110, 130, 150, 200]
+  }
 
-      quizImage.src = q.solutionImage;
-      optionsDiv.innerHTML = "";
+];
 
-      feedback.innerHTML = isCorrect
-        ? `<span class="correct">Richtig! ${q.correct} km/h</span>`
-        : `<span class="wrong">Falsch. Deine Antwort: ${selected} km/h<br>Richtig: ${q.correct} km/h</span>`;
+let currentQuestion = 0;
+let score = 0;
+let answers = [];
 
-      nextButton.style.display = "block";
-    }
+const quizImage = document.getElementById("quizImage");
+const optionsDiv = document.getElementById("options");
+const feedback = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextBtn");
+const progress = document.getElementById("progress");
+const summary = document.getElementById("summary");
 
-    nextButton.onclick = () => {
-      currentQuestion++;
+function loadQuestion() {
 
-      if (currentQuestion < questions.length) {
-        loadQuestion();
-      } else {
-        showSummary();
-      }
-    };
+  const q = questions[currentQuestion];
 
-    function showSummary() {
-      quizImage.style.display = "none";
-      optionsDiv.innerHTML = "";
+  progress.innerHTML =
+    `Frage ${currentQuestion + 1} / ${questions.length}`;
+
+  quizImage.style.display = "block";
+  quizImage.src = q.normalImage;
+
+  optionsDiv.innerHTML = "";
+  feedback.innerHTML = "";
+  nextBtn.style.display = "none";
+
+  q.options.forEach(option => {
+
+    const btn = document.createElement("button");
+
+    btn.innerText = option + " km/h";
+
+    btn.onclick = () => selectAnswer(option);
+
+    optionsDiv.appendChild(btn);
+
+  });
+
+}
+
+function selectAnswer(selected) {
+
+  const q = questions[currentQuestion];
+
+  const correct = selected === q.correct;
+
+  if(correct) score++;
+
+  answers.push({
+    question: currentQuestion + 1,
+    selected,
+    correctAnswer: q.correct,
+    correct
+  });
+
+  quizImage.src = q.solutionImage;
+
+  optionsDiv.innerHTML = "";
+
+  if(correct) {
+
+    feedback.innerHTML =
+      `<div class="correct">
+        ✅ Richtig!<br>
+        ${q.correct} km/h
+      </div>`;
+
+  } else {
+
+    feedback.innerHTML =
+      `<div class="wrong">
+        ❌ Falsch<br><br>
+        Deine Antwort:
+        ${selected} km/h<br>
+        Richtige Antwort:
+        ${q.correct} km/h
+      </div>`;
+
+  }
+
+  nextBtn.style.display = "inline-block";
+
+}
+
+nextBtn.onclick = () => {
+
+  currentQuestion++;
+
+  if(currentQuestion < questions.length) {
+
+    loadQuestion();
+
+  } else {
+
+    showSummary();
+
+  }
+
+};
+
+function showSummary() {
+
+  quizImage.style.display = "none";
+  optionsDiv.innerHTML = "";
+  feedback.innerHTML = "";
+  nextBtn.style.display = "none";
+
+  progress.innerHTML = "Quiz beendet";
+
+  summary.innerHTML =
+    `<h2>
+      Ergebnis:
+      ${score} / ${questions.length}
+    </h2>`;
+
+  answers.forEach(a => {
+
+    summary.innerHTML +=
+      `<div class="summary-item">
+
+        <strong>
+          Frage ${a.question}
+        </strong><br><br>
+
+        Deine Antwort:
+        ${a.selected} km/h<br>
+
+        Richtige Antwort:
+        ${a.correctAnswer} km/h<br><br>
+
+        ${a.correct ? "✅ Richtig" : "❌ Falsch"}
+
+      </div>`;
+
+  });
+
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
