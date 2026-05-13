@@ -5,28 +5,126 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Speedquiz</title>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #111; color: white; text-align: center; }
-    .container { max-width: 700px; margin: auto; padding: 20px; }
-    img { width: 100%; max-height: 420px; object-fit: contain; border-radius: 12px; background: #222; }
-    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-    button { padding: 16px; font-size: 20px; border: none; border-radius: 12px; cursor: pointer; background: #2f7df6; color: white; font-weight: bold; }
-    .next { margin-top: 20px; background: #22c55e; }
-    .result { margin-top: 20px; font-size: 20px; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #222;
+    }
+
+    input {
+      width: 90%;
+      max-width: 400px;
+      padding: 16px;
+      font-size: 22px;
+      border-radius: 12px;
+      border: none;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 16px;
+      font-size: 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #2f7df6;
+      color: white;
+      font-weight: bold;
+    }
+
+    .next {
+      margin-top: 20px;
+      background: #22c55e;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+
     .correct { color: #4ade80; }
     .wrong { color: #f87171; }
-    .summary { text-align: left; margin-top: 20px; }
-    .summary-item { background: #222; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+
+    .summary {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .summary-item {
+      background: #222;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .final-card {
+      background: #222;
+      border-radius: 20px;
+      padding: 30px 20px;
+      margin-top: 30px;
+      text-align: center;
+      border: 2px solid #444;
+    }
+
+    .final-card h2 {
+      font-size: 32px;
+      margin: 0 0 15px;
+    }
+
+    .final-card h1 {
+      font-size: 38px;
+      margin: 0;
+      color: #4ade80;
+    }
   </style>
 </head>
 <body>
+
 <div class="container">
-  <h1>Speedquiz</h1>
-  <p id="progress"></p>
-  <img id="quizImage" src="" alt="Quizbild" />
-  <div id="options" class="options"></div>
-  <div id="feedback" class="result"></div>
-  <button id="nextButton" class="next" style="display:none;">Weiter</button>
+
+  <div id="startScreen">
+    <h1>Speedquiz</h1>
+    <p>Gib deinen Namen ein und starte das Quiz.</p>
+    <input id="playerNameInput" placeholder="Dein Name" />
+    <br>
+    <button onclick="startQuiz()">Start</button>
+  </div>
+
+  <div id="quizScreen" style="display:none;">
+    <h1>Speedquiz</h1>
+    <p id="progress"></p>
+    <img id="quizImage" src="" alt="Quizbild" />
+    <div id="options" class="options"></div>
+    <div id="feedback" class="result"></div>
+    <button id="nextButton" class="next" style="display:none;">Weiter</button>
+  </div>
+
   <div id="summary" class="summary"></div>
+
 </div>
 
 <script>
@@ -53,7 +151,11 @@ const questions = [
 let currentQuestion = 0;
 let score = 0;
 let answers = [];
+let playerName = "";
 
+const startScreen = document.getElementById("startScreen");
+const quizScreen = document.getElementById("quizScreen");
+const playerNameInput = document.getElementById("playerNameInput");
 const quizImage = document.getElementById("quizImage");
 const optionsDiv = document.getElementById("options");
 const feedback = document.getElementById("feedback");
@@ -61,14 +163,25 @@ const nextButton = document.getElementById("nextButton");
 const progress = document.getElementById("progress");
 const summary = document.getElementById("summary");
 
+function startQuiz() {
+  playerName = playerNameInput.value.trim();
+
+  if (!playerName) {
+    playerName = "Unbekannt";
+  }
+
+  startScreen.style.display = "none";
+  quizScreen.style.display = "block";
+  loadQuestion();
+}
+
 function loadQuestion() {
   const q = questions[currentQuestion];
+
   progress.textContent = `Frage ${currentQuestion + 1} von ${questions.length}`;
-  quizImage.style.display = "block";
   quizImage.src = q.normalImage;
   feedback.innerHTML = "";
   optionsDiv.innerHTML = "";
-  summary.innerHTML = "";
   nextButton.style.display = "none";
 
   q.options.forEach(option => {
@@ -113,13 +226,14 @@ nextButton.onclick = () => {
 };
 
 function showSummary() {
-  quizImage.style.display = "none";
-  optionsDiv.innerHTML = "";
-  feedback.innerHTML = "";
-  nextButton.style.display = "none";
-  progress.textContent = "Quiz beendet";
+  quizScreen.style.display = "none";
 
-  summary.innerHTML = `<h2>Ergebnis</h2><h3>${score} von ${questions.length} richtig</h3>`;
+  summary.innerHTML = `
+    <div class="final-card">
+      <h2>${playerName}</h2>
+      <h1>hat ${score} von ${questions.length} richtig</h1>
+    </div>
+  `;
 
   answers.forEach(a => {
     summary.innerHTML += `
@@ -132,8 +246,7 @@ function showSummary() {
     `;
   });
 }
-
-loadQuestion();
 </script>
+
 </body>
 </html>
